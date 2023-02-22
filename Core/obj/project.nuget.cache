@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "5kqDk1Nrw/speL7Gan18SSTbB2ch+zOwA38BqtZq+zk9HwAcQdhnLattys6k7L26WuUMrhu8HgJ0G5IJ6G6bXA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\asus\\Desktop\\AcademyApp-Console--master\\Core\\Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\asus\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\5.0.0\\microsoft.windowsdesktop.app.ref.5.0.0.nupkg.sha512",
+    "C:\\Users\\asus\\.nuget\\packages\\microsoft.netcore.app.ref\\5.0.0\\microsoft.netcore.app.ref.5.0.0.nupkg.sha512",
+    "C:\\Users\\asus\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\5.0.0\\microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
