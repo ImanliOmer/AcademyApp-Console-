@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories.Abstract
 {
-    internal interface IGroupRepository
+    public interface IGroupRepository: IRepository<Group>
     {
         Group GetAll();
-        Group Get(int id);
-        void Add(Group group);
-        void Update(Group group);
-        void Delete(Group group);
+        Group GetByName(string name);
     }
 }

@@ -55,7 +55,7 @@ namespace Data.Repositories.Concrete
             throw new NotImplementedException();
         }
 
-        public object GetGroupByName(string name)
+        public Group GetGroupByName(string name)
         {
             return DbContext.Groups.FirstOrDefault(n => n.Name==name);
         }
@@ -63,6 +63,11 @@ namespace Data.Repositories.Concrete
         Group IGroupRepository.GetAll()
         {
             throw new NotImplementedException();
+        }
+
+        public Group GetByName(string name)
+        {
+            return DbContext.Groups.FirstOrDefault(g => g.Name.ToLower() == name.ToLower());
         }
     }
 }

@@ -10,14 +10,22 @@ namespace Presentation.Services
     public class GroupService
     {
         private readonly GroupRepository _groupRepositery;
+        private readonly StudentRepository _studentRepository;
         public GroupService()
         {
             _groupRepositery = new GroupRepository();
+            _studentRepository = new StudentRepository();
         }
         public void Create()
         {
-            ConsoleHelper.WriteWithColor("---Enter Group Name---", ConsoleColor.DarkBlue);
+           NameDesc: ConsoleHelper.WriteWithColor("---Enter Group Name---", ConsoleColor.DarkBlue);
             string name = Console.ReadLine();
+            var group = _groupRepositery.GetByName(name);
+            if (group is not null)
+            {
+                ConsoleHelper.WriteWithColor("this group is already added",ConsoleColor.Red);
+                goto NameDesc;
+            }
 
             int maxSize;
         MaxSizeDesc: ConsoleHelper.WriteWithColor("---Enter Group Maxsize---", ConsoleColor.DarkBlue);
@@ -33,19 +41,19 @@ namespace Presentation.Services
                 goto MaxSizeDesc;
             }
 
-        DateTimeDesc: ConsoleHelper.WriteWithColor("---Enter Start Date---", ConsoleColor.DarkBlue);
+        StartDateTimeDesc: ConsoleHelper.WriteWithColor("---Enter Start Date---", ConsoleColor.DarkBlue);
             DateTime startDate;
             isSucceeded = DateTime.TryParseExact(Console.ReadLine(), "dd.mm.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
             if (!isSucceeded)
             {
                 ConsoleHelper.WriteWithColor(" Start Date is not correct format\n Example:dd.mm.yyyy", ConsoleColor.Red);
-                goto DateTimeDesc;
+                goto StartDateTimeDesc;
             }
             DateTime boundryDate = new DateTime(2015, 1, 1);
             if (startDate < boundryDate)
             {
                 ConsoleHelper.WriteWithColor(" Start date is not choosen right\n Startig 01.01.2015", ConsoleColor.Red);
-                goto DateTimeDesc;
+                goto StartDateTimeDesc;
             }
 
         EndDateTimeDesc: ConsoleHelper.WriteWithColor("---Enter End Date---", ConsoleColor.DarkBlue);
@@ -62,7 +70,7 @@ namespace Presentation.Services
                 goto EndDateTimeDesc;
             }
 
-            var group = new Group
+            group = new Group
             {
                 Name = name,
                 MaxSize = maxSize,
@@ -74,8 +82,6 @@ namespace Presentation.Services
             ConsoleHelper.WriteWithColor($"Group succesfuly created\nName: {group.Name}\nMaxSize: {group.MaxSize}\nStart Date: {group.StartDate.ToShortDateString()}\nEnd Date: {group.EndDate.ToShortDateString()}", ConsoleColor.Yellow);
 
         }
-
-
         public void GetAll()
         {
             ConsoleHelper.WriteWithColor("--- ALL GROUPS---", ConsoleColor.DarkCyan);
@@ -85,7 +91,6 @@ namespace Presentation.Services
                 ConsoleHelper.WriteWithColor($"Id: {groups_.Id}Name: {groups_.Name}\nMax Size: {groups_.MaxSize}\nStart Date: {groups_.StartDate}\nEnd Date: {groups_.EndDate}", ConsoleColor.Yellow);
             }
         }
-
         public void Delete()
         {
             GetAll();
@@ -104,11 +109,15 @@ namespace Presentation.Services
             }
             else
             {
+                foreach (var student in dbGroup.Students)
+                {
+                    student.Group = null;
+                    _studentRepository.Update(student);
+                }
                 _groupRepositery.Delete(dbGroup);
                 ConsoleHelper.WriteWithColor("Group succesfuly deleted", ConsoleColor.DarkGreen);
             }
         }
-
         public bool Exit()
         {
 
@@ -192,9 +201,25 @@ namespace Presentation.Services
 
 
         }
+        public void GetGroupByName()
+        {
 
-        
 
+        StartName: ConsoleHelper.WriteWithColor("Enter group name ", ConsoleColor.Cyan);
+            string name = Console.ReadLine();
+            var group = _groupRepositery.GetGroupByName(name);
+
+
+
+            if (group is null)
+            {
+                ConsoleHelper.WriteWithColor("There is no any group in this name", ConsoleColor.Red);
+                goto StartName;
+            }
+            ConsoleHelper.WriteWithColor($"\nId : {group.Id} \nName : {group.Name} \nMax size : {group.MaxSize}  \nStartDate : {group.StartDate.ToShortDateString()} \nEnd date : {group.EndDate.ToShortDateString()}", ConsoleColor.Blue);
+
+
+        }
         public void Update()
         {
             GetAll();
@@ -207,7 +232,7 @@ namespace Presentation.Services
             bool isSucceeded = int.TryParse(Console.ReadLine(), out number);
             if (!isSucceeded)
             {
-                ConsoleHelper.WriteWithColor("Entered number is not correct format !", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("Entered number is not correct format ", ConsoleColor.Red);
                 goto EnterGroupDescription;
             }
 
@@ -225,7 +250,7 @@ namespace Presentation.Services
 
                 if (!isSucceeded)
                 {
-                    ConsoleHelper.WriteWithColor("inputed id is not correct format !", ConsoleColor.Red);
+                    ConsoleHelper.WriteWithColor("inputed id is not correct format ", ConsoleColor.Red);
                     goto EnterGroupIdDescription;
                 }
                 var group = _groupRepositery.Get(id);
@@ -256,7 +281,7 @@ namespace Presentation.Services
             bool isSucceeded = int.TryParse(Console.ReadLine(), out maxSize);
             if (!isSucceeded)
             {
-                ConsoleHelper.WriteWithColor("Max size is not correct format !", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("Max size is not correct format ", ConsoleColor.Red);
                 goto MaxSizeDescription;
             }
         startDate: ConsoleHelper.WriteWithColor("Enter new start Date : ", ConsoleColor.Cyan);
@@ -264,7 +289,7 @@ namespace Presentation.Services
             isSucceeded = DateTime.TryParseExact(Console.ReadLine(), "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate);
             if (!isSucceeded)
             {
-                ConsoleHelper.WriteWithColor("Start Date is not correct format ! ", ConsoleColor.Red);
+                ConsoleHelper.WriteWithColor("Start Date is not correct format  ", ConsoleColor.Red);
                 goto startDate;
             }
         endDate: ConsoleHelper.WriteWithColor("Enter new end Date : ", ConsoleColor.Cyan);
